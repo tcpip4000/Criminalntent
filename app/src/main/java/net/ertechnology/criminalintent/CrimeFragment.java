@@ -25,6 +25,7 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private Button mSaveButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,12 +79,17 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSolved(isChecked);
             }
         });
+
+        mSaveButton = (Button)v.findViewById(R.id.crime_save);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                mCrime.save(getActivity());
+                getActivity().finish();
+            }
+
+        });
         return v;
     }
 
-    @Override
-    public void onDestroy() {
-        //mCrime.mySave(getActivity());
-        super.onDestroy();
-    }
 }

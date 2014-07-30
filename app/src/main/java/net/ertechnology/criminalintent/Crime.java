@@ -53,8 +53,19 @@ public class Crime {
         return mTitle;
     }
 
-    public long mySave(Context context) {
+    public long save(Context context) {
+        long result;
         CrimeDBHelper cdbHelper = new CrimeDBHelper(context);
-        return cdbHelper.insertCrime(this);
+        if (this.existsInDB(context)) {
+            result = cdbHelper.updateCrime(this);
+        } else {
+            result = cdbHelper.insertCrime(this);
+        }
+        return result;
+    }
+
+    public boolean existsInDB(Context context) {
+        CrimeDBHelper cdbHelper = new CrimeDBHelper(context);
+        return cdbHelper.exists(this);
     }
 }
