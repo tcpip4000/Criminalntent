@@ -1,5 +1,7 @@
 package net.ertechnology.criminalintent;
 
+import android.content.Context;
+
 import java.util.UUID;
 import java.util.Date;
 
@@ -49,5 +51,10 @@ public class Crime {
     @Override
     public String toString() {
         return mTitle;
+    }
+
+    public long mySave(Context context) {
+        CrimeDBHelper cdbHelper = new CrimeDBHelper(context);
+        return cdbHelper.insertCrime(this);
     }
 }

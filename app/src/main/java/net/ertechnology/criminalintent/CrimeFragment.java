@@ -81,4 +81,9 @@ public class CrimeFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onDestroy() {
+        //mCrime.mySave(getActivity());
+        super.onDestroy();
+    }
 }
