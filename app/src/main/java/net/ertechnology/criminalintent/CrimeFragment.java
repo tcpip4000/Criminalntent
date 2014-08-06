@@ -1,7 +1,9 @@
 package net.ertechnology.criminalintent;
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ import java.util.UUID;
 public class CrimeFragment extends Fragment {
 
     public static final String EXTRA_CRIME_ID = "net.ertechnology.criminalintent.crime_id";
+    public static final String DIALOG_DATE = "date";
+    public static final int REQUEST_DATE = 0;
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -69,7 +73,15 @@ public class CrimeFragment extends Fragment {
 
         mDateButton = (Button)v.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
-        mDateButton.setEnabled(false);
+        //mDateButton.setEnabled(false);
+        mDateButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                dialog.show(fm, DIALOG_DATE);
+            }
+        });
 
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
