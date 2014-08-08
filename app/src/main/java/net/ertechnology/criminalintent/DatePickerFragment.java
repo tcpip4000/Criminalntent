@@ -1,15 +1,18 @@
 package net.ertechnology.criminalintent;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.method.DateKeyListener;
 import android.widget.DatePicker;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,32 +44,38 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-
-        DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
-        /*DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                mDate = new GregorianCalendar(year, month, day).getTime();
-            }
-        }, year, month, day);*/
-
-
-        /*dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Doni", new DialogInterface.OnClickListener() {
+        //
+        // Due to bug: https://code.google.com/p/android/issues/detail?id=34833,
+        // have to create the dialog with null handler (second parameter) and then define setButton
+        DatePickerDialog dialog = new DatePickerDialog(getActivity(), null, year, month, day);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Done", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_POSITIVE) {
+                    // Due to no existence of getDatePicker in API below 11, have to use reflection to get the datePicker of the dialog
+                    // Solution for API 11 and up: DatePicker datePicker = ((DatePickerDialog)dialog).getDatePicker();
+                    DatePicker datePicker = null;
+                    try {
+                        Field mDatePickerField = dialog.getClass().getDeclaredField("mDatePicker");
+                        mDatePickerField.setAccessible(true);
+                         datePicker = (DatePicker) mDatePickerField.get(dialog);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    }
+                    // end of reflection
+
+                    mDate =  new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth()).getTime();
                     getArguments().putSerializable(EXTRA_DATE, mDate);
                     sendResult(Activity.RESULT_OK);
                 }
             }
-        });*/
+        });
         return dialog;
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        mDate = new GregorianCalendar(year, month, day).getTime();
-        getArguments().putSerializable(EXTRA_DATE, mDate);
-        sendResult(Activity.RESULT_OK);
     }
 /*
     public void onDateChanged(DatePicker view, int year, int month, int day) {
