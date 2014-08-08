@@ -1,15 +1,12 @@
 package net.ertechnology.criminalintent;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.text.method.DateKeyListener;
 import android.widget.DatePicker;
 
 import java.lang.reflect.Field;
@@ -77,17 +74,11 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
     }
-/*
-    public void onDateChanged(DatePicker view, int year, int month, int day) {
-        // Do something with the date chosen by the user
-        mDate = new GregorianCalendar(year, month, day).getTime();
-        getArguments().putSerializable(EXTRA_DATE, mDate);
-    }*/
 
     private void sendResult(int resultCode) {
-        if (getTargetFragment() == null)
+        if (getTargetFragment() == null) {
             return;
-
+        }
         Intent i = new Intent();
         i.putExtra(EXTRA_DATE, mDate);
         getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
