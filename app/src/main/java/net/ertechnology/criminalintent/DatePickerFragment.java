@@ -1,10 +1,13 @@
 package net.ertechnology.criminalintent;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.method.DateKeyListener;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
@@ -38,18 +41,51 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         // Create a new instance of DatePickerDialog and return it
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+
+        DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        /*DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                mDate = new GregorianCalendar(year, month, day).getTime();
+            }
+        }, year, month, day);*/
+
+
+        /*dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Doni", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    getArguments().putSerializable(EXTRA_DATE, mDate);
+                    sendResult(Activity.RESULT_OK);
+                }
+            }
+        });*/
+        return dialog;
     }
 
+    @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
+        mDate = new GregorianCalendar(year, month, day).getTime();
+        getArguments().putSerializable(EXTRA_DATE, mDate);
+        sendResult(Activity.RESULT_OK);
+    }
+/*
+    public void onDateChanged(DatePicker view, int year, int month, int day) {
         // Do something with the date chosen by the user
         mDate = new GregorianCalendar(year, month, day).getTime();
         getArguments().putSerializable(EXTRA_DATE, mDate);
+    }*/
+
+    private void sendResult(int resultCode) {
+        if (getTargetFragment() == null)
+            return;
+
+        Intent i = new Intent();
+        i.putExtra(EXTRA_DATE, mDate);
+        getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
     }
 
    /*@Override
    public Dialog onCreateDialog(Bundle savedInstanceState) {
-
        return new AlertDialog.Builder(getActivity()).setTitle(R.string.date_picker_title).setPositiveButton(android.R.string.ok, null).create();
    }*/
 }
