@@ -40,6 +40,7 @@ public class CrimeListFragment extends ListFragment {
         CrimeAdapter adapter = new CrimeAdapter(mCrimes);
         setListAdapter(adapter);
 
+        setRetainInstance(true);  // retains object data when destruction
         mSubtitleVisible = false;
     }
 
@@ -127,12 +128,12 @@ public class CrimeListFragment extends ListFragment {
             case R.id.menu_item_show_subtitle:
                 if (getActivity().getActionBar().getSubtitle() == null) {
                     getActivity().getActionBar().setSubtitle(R.string.subtitle);
-                    item.setTitle(R.string.hide_subtitle);
                     mSubtitleVisible = true;
+                    item.setTitle(R.string.hide_subtitle);
                 } else {
                     getActivity().getActionBar().setSubtitle(null);
-                    item.setTitle(R.string.show_subtitle);
                     mSubtitleVisible = false;
+                    item.setTitle(R.string.show_subtitle);
                 }
                 return true;
             default:
