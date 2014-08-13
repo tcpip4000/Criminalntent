@@ -33,8 +33,7 @@
         android:paddingRight="4dp"
         android:paddingLeft="4dp"
         android:paddingTop="4dp"
-        android:text="Crime date"/>
-
-
+        android:text="Crime date"
+        android:background="@drawable/background_activated" />
 
 </RelativeLayout>
